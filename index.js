@@ -4,13 +4,14 @@ const fs = require("fs");
 const bodyParser = require('body-parser');
 const assert = require("assert");
 const cors = require("cors");
+const pass = require("./config");
 
 
 const port = 3000;
 
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://zafir:Jackawahoo1!@cluster0-twsfv.mongodb.net/test?retryWrites=true&w=majority";
+const uri = `mongodb+srv://zafir:${pass}@cluster0-twsfv.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true} );
 
 app.use(express.json());
