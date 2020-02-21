@@ -23,6 +23,29 @@ client.connect(err => {
 app.use(express.json());
 app.use(cors());
 
+app.post("/", (req, res, next)=> {
+  console.log("Recieved a post request")
+
+  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+  res.send("This is a post");
+})
+
+app.get("/me", (req, res, next)=> {
+  console.log(`GET /me/${req.params.id}`);
+  const collection = client.db("statify").collection("users");
+  collection.find({_id: req.params.id}).toArray((err, docs)=>{
+    if (err) {
+      console.log("Database transaction err: ", err);
+      res.sendStatus(500);
+    }
+    else if (docs.length) {
+      res.send(docs);
+    }
+    else {
+      res.sendStatus(404);
+    }
+  })
+});
 
 app.get("/getuser/:id", (req, res, next)=> {
   console.log(`GET /getuser/${req.params.id}`)
@@ -30,21 +53,18 @@ app.get("/getuser/:id", (req, res, next)=> {
 
   const collection = client.db("statify").collection("data");
   let cursor = collection.find({_id: req.params.id}).toArray((err, docs)=> {
-    if (!docs.length) {
-      res.sendStatus(404);
+    if (docs.length) {
+      if (docs[0].share) {
+        res.send(docs);
+      } else {
+        res.sendStatus(401);
+      }
     } else {
-      res.send(docs);
-    }  
+      res.sendStatus(404);
+    } 
   })
 })
 
-
-app.post("/", (req, res, next)=> {
-  console.log("Recieved a post request")
-
-  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-  res.send("This is a post");
-})
 
 app.post("/storeuser", (req, res, next)=> {
   console.log("POST /storeuser", req.body);
