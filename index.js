@@ -14,60 +14,63 @@ const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://zafir:${pass}@cluster0-twsfv.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true} );
 
+client.connect(err => { 
+  if (err) {
+    console.log("Database connection err: ", err);
+  }
+});
+
 app.use(express.json());
 app.use(cors());
 
 
-app.get("/:id", (req, res, next)=> {
-  
+app.get("/getuser/:id", (req, res, next)=> {
+  console.log(`GET /getuser/${req.params.id}`)
+  console.log(req.params.id);
+
+  const collection = client.db("statify").collection("data");
+  let cursor = collection.find({_id: req.params.id}).toArray((err, docs)=> {
+    if (!docs.length) {
+      res.sendStatus(404);
+    } else {
+      res.send(docs);
+    }  
+  })
 })
 
 
 app.post("/", (req, res, next)=> {
   console.log("Recieved a post request")
-  client.connect(err => {
-    const collection = client.db("test").collection("devices");
-    const db = client.db("test");
 
-    db.collection("testcol").insertOne({a:100}, (err, r)=> {
-      console.log("inserted data")
-      client.close();
-    })
-  });
   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
   res.send("This is a post");
 })
 
 app.post("/storeuser", (req, res, next)=> {
   console.log("POST /storeuser", req.body);
-  client.connect(err => {
+
+  const collection = client.db("statify").collection("users");
+  collection.updateOne({_id: req.body.id}, {$set: {_id: req.body.id, [req.body.id]: req.body}}, {upsert: true}, (err, resultdoc)=> {
     if (err) {
-      console.log("Database connection err: ", err);
+      console.log("Database transaction err: ", err)
       res.sendStatus(500);
+    } else {
+      // console.log(resultdoc);
+      // assert.strictEqual(r.insertedId, req.body.id);
+      console.log("Document was succesfully inserted");
+      res.sendStatus(200);
     }
-    const collection = client.db("statify").collection("users");;
-    collection.updateOne({_id: req.body.id}, {$set: {_id: req.body.id, [req.body.id]: req.body}}, {upsert: true}, (err, resultdoc)=> {
-      if (err) {
-        console.log("Database transaction err: ", err)
-        res.sendStatus(500);
-      } else {
-        // console.log(resultdoc);
-        // assert.strictEqual(r.insertedId, req.body.id);
-        console.log("Document was succesfully inserted");
-        res.sendStatus(200);
-        client.close()
-      }
-    })
-  });
+  })
+
 
 
 });
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 app.get('/', (req, res, next)=> {
   res.send("It Works!");
