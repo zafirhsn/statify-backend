@@ -30,7 +30,7 @@ app.post("/", (req, res, next)=> {
   res.send("This is a post");
 })
 
-app.get("/me", (req, res, next)=> {
+app.get("/me/:id", (req, res, next)=> {
   console.log(`GET /me/${req.params.id}`);
   const collection = client.db("statify").collection("users");
   collection.find({_id: req.params.id}).toArray((err, docs)=>{
@@ -44,7 +44,7 @@ app.get("/me", (req, res, next)=> {
     else {
       res.sendStatus(404);
     }
-  })
+  });
 });
 
 app.get("/getuser/:id", (req, res, next)=> {
