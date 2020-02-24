@@ -20,7 +20,7 @@ client.connect(err => {
   }
 });
 
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
 app.use(cors());
 
 app.post("/", (req, res, next)=> {
@@ -67,17 +67,35 @@ app.get("/getuser/:id", (req, res, next)=> {
 
 
 app.post("/storeuser", (req, res, next)=> {
-  console.log("POST /storeuser", req.body);
+  console.log("POST /storeuser");
+  let numparams = 3;
 
+  if (Object.keys(req.body).length !== numparams || !req.body.profile || !req.body.id || !req.body.data) {
+    res.sendStatus(400);
+  }
+
+  console.log(typeof req.body.id)
   const collection = client.db("statify").collection("users");
-  collection.updateOne({_id: req.body.id}, {$set: {_id: req.body.id, [req.body.id]: req.body}}, {upsert: true}, (err, resultdoc)=> {
+  collection.updateOne({_id: req.body.id}, {$set: {_id: req.body.id, profile: req.body.profile, data: req.body.data}}, {upsert: true}, (err, resultdoc)=> {
     if (err) {
       console.log("Database transaction err: ", err)
       res.sendStatus(500);
-    } else {
-      // console.log(resultdoc);
-      // assert.strictEqual(r.insertedId, req.body.id);
-      console.log("Document was succesfully inserted");
+    } 
+    console.log(resultdoc);
+    if (resultdoc.upsertedId && resultdoc.upsertedId._id === req.body.id) {
+      collection.updateOne({_id: req.body.id}, {$set: {share: false}}, {upsert: true}, (err, resultdoc)=> {
+        if (err) {
+          console.log("Database transaction err when adding 'share' field: ", err);
+          res.sendStatus(500);
+        }
+        else { 
+          console.log("A new user was succesfully inserted");
+          res.sendStatus(200);
+        }
+      })
+    }
+    else {
+      console.log("A user was successfully updated");
       res.sendStatus(200);
     }
   })
