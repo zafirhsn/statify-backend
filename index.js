@@ -51,8 +51,9 @@ app.get("/getuser/:id", (req, res, next)=> {
   console.log(`GET /getuser/${req.params.id}`)
   console.log(req.params.id);
 
-  const collection = client.db("statify").collection("data");
+  const collection = client.db("statify").collection("users");
   let cursor = collection.find({_id: req.params.id}).toArray((err, docs)=> {
+    console.log(docs);
     if (docs.length) {
       if (docs[0].share) {
         res.send(docs);
@@ -81,7 +82,7 @@ app.post("/storeuser", (req, res, next)=> {
       console.log("Database transaction err: ", err)
       res.sendStatus(500);
     } 
-    console.log(resultdoc);
+    // console.log(resultdoc);
     if (resultdoc.upsertedId && resultdoc.upsertedId._id === req.body.id) {
       collection.updateOne({_id: req.body.id}, {$set: {share: false}}, {upsert: true}, (err, resultdoc)=> {
         if (err) {
