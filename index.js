@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const assert = require("assert");
 const cors = require("cors");
 const pass = require("./config");
+const LZ = require("lz-string");
 
 
 const port = 3000;
