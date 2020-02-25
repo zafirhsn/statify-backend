@@ -1,3 +1,5 @@
+const LZ = require('lz-string');
+
 let req = { 
   body: {
     "items": [
@@ -12855,10 +12857,6 @@ function cleanTrackData(data) {
   return newData;
 }
 
-let trackData = cleanTrackData(req2);
-// console.log(trackData);
-sizeReduction(req2.body, trackData);
-
 function cleanArtistData(data) {
   let total = data.body.total;
   let href = data.body.href;
@@ -12889,9 +12887,29 @@ function cleanArtistData(data) {
   return newData;
 }
 
-let data = cleanArtistData(req);
-// console.log(data);
+function getBinarySize(string) {
+  return Buffer.byteLength(string, 'utf8');
+}
 
+function sizeReduction(obj1, obj2) {
+  let sizeObj1; 
+  let sizeObj2;
+  if (typeof obj1 === "string") {
+    sizeObj1 = getBinarySize(obj1);
+  }
+  else {
+    sizeObj1 = roughSizeOfObject(obj1);
+  }
+  if (typeof obj2 === "string") {
+    sizeObj2 = getBinarySize(obj2);
+  } else {
+    sizeObj2 = roughSizeOfObject(obj2);
+  }
+  let percent = ((sizeObj1 - sizeObj2) / sizeObj1) * 100;
+  percent = percent.toFixed(2);
+  console.log(`There was a ${percent}% reduction in size      ${sizeObj1} ===> ${sizeObj2}`);
+
+}
 
 function roughSizeOfObject( object ) {
 
@@ -12927,17 +12945,29 @@ function roughSizeOfObject( object ) {
   return bytes;
 }
 
-function sizeReduction(obj1, obj2) {
-  let sizeObj1 = roughSizeOfObject(obj1);
-  let sizeObj2 = roughSizeOfObject(obj2);
+let trackData = cleanTrackData(req2);
+sizeReduction(req2.body, trackData);
+let artistData = cleanArtistData(req);
+sizeReduction(req.body, artistData);
 
-  let percent = ((sizeObj1 - sizeObj2) / sizeObj1) * 100;
-  percent = percent.toFixed(2);
-  console.log(`There was a ${percent}% reduction in size      ${sizeObj1} ===> ${sizeObj2}`);
+let LZreq = LZ.compressToEncodedURIComponent(JSON.stringify(req.body));
 
-}
 
-sizeReduction(req.body, data);
+console.log("Size of obj in bytes: ", roughSizeOfObject(req.body));
+console.log("Size of obj after JSON.stringify in bytes: ", getBinarySize(JSON.stringify(req.body)));
+console.log("Size of obj after string and LZ compress: ", getBinarySize(LZreq));
+
+
+console.log("=====");
+let LZtrackData = LZ.compressToEncodedURIComponent(JSON.stringify(trackData));
+sizeReduction(trackData, LZtrackData);
+sizeReduction(req2.body, LZtrackData);
+let trackData2 = JSON.parse(LZ.decompressFromEncodedURIComponent(LZtrackData));
+
+let base64trackData = Buffer.from(JSON.stringify(trackData)).toString("base64");
+console.log("Size of base64 encoded : ", getBinarySize(base64trackData));
+let LZB64trackdata = LZ.compressToEncodedURIComponent(base64trackData);
+console.log("B64 => LZ : ", getBinarySize(LZB64trackdata));
 
 
 // let obj = {
