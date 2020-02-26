@@ -40,7 +40,7 @@ app.get("/me/:id", (req, res, next)=> {
       res.sendStatus(500);
     }
     else if (docs.length) {
-      res.send(docs);
+      res.send(docs[0]);
     }
     else {
       res.sendStatus(404);
@@ -50,14 +50,13 @@ app.get("/me/:id", (req, res, next)=> {
 
 app.get("/getuser/:id", (req, res, next)=> {
   console.log(`GET /getuser/${req.params.id}`)
-  console.log(req.params.id);
 
   const collection = client.db("statify").collection("users");
   let cursor = collection.find({_id: req.params.id}).toArray((err, docs)=> {
     console.log(docs);
     if (docs.length) {
       if (docs[0].share) {
-        res.send(docs);
+        res.send(docs[0]);
       } else {
         res.sendStatus(401);
       }
