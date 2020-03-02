@@ -70,9 +70,10 @@ app.get("/getuser/:id", (req, res, next)=> {
 app.post("/storeuser", (req, res, next)=> {
   console.log("POST /storeuser");
   let numparams = 3;
+  // console.log(req.body);
 
   if (Object.keys(req.body).length !== numparams || !req.body.profile || !req.body.id || !req.body.data) {
-    res.sendStatus(400);
+    return res.sendStatus(400);
   }
 
   console.log(typeof req.body.id)
@@ -80,24 +81,24 @@ app.post("/storeuser", (req, res, next)=> {
   collection.updateOne({_id: req.body.id}, {$set: {_id: req.body.id, profile: req.body.profile, data: req.body.data}}, {upsert: true}, (err, resultdoc)=> {
     if (err) {
       console.log("Database transaction err: ", err)
-      res.sendStatus(500);
+      return res.sendStatus(500);
     } 
     // console.log(resultdoc);
     if (resultdoc.upsertedId && resultdoc.upsertedId._id === req.body.id) {
       collection.updateOne({_id: req.body.id}, {$set: {share: false}}, {upsert: true}, (err, resultdoc)=> {
         if (err) {
           console.log("Database transaction err when adding 'share' field: ", err);
-          res.sendStatus(500);
+          return res.sendStatus(500);
         }
         else { 
           console.log("A new user was succesfully inserted");
-          res.sendStatus(200);
+          return res.sendStatus(200);
         }
       })
     }
     else {
       console.log("A user was successfully updated");
-      res.sendStatus(200);
+      return res.sendStatus(200);
     }
   })
 
