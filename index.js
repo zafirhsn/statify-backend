@@ -7,9 +7,8 @@ const cors = require("cors");
 const pass = require("./config");
 const LZ = require("lz-string");
 
-
+// TODO: Figure out how port will change on heroku
 const port = 3000;
-
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://zafir:${pass}@cluster0-twsfv.mongodb.net/test?retryWrites=true&w=majority`;
@@ -31,6 +30,7 @@ app.post("/", (req, res, next)=> {
   res.send("This is a post");
 })
 
+// TODO: Add JWT to routes 
 app.get("/me/:id", (req, res, next)=> {
   console.log(`GET /me/${req.params.id}`);
   const collection = client.db("statify").collection("users");
@@ -105,12 +105,6 @@ app.post("/storeuser", (req, res, next)=> {
 
 
 });
-
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
 
 app.get('/', (req, res, next)=> {
   return res.send("It Works!");

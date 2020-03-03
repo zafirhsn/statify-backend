@@ -12946,10 +12946,11 @@ function roughSizeOfObject( object ) {
 }
 
 let trackData = cleanTrackData(req2);
-console.log(trackData.items[0].artists);
 sizeReduction(req2.body, trackData);
+// console.log(trackData);
 let artistData = cleanArtistData(req);
 sizeReduction(req.body, artistData);
+console.log(artistData);
 
 let LZreq = LZ.compressToEncodedURIComponent(JSON.stringify(req.body));
 
@@ -12972,36 +12973,36 @@ console.log("B64 => LZ : ", getBinarySize(LZB64trackdata));
 
 let d = "N4IgLg9mCGA2IC4BMAGANCAFgJwKYDNEswwAHAZwQHorpSBLAOnNKnvwE9GBjCAWyoA3AIxU+uKpFK1sYeuTDkA-LHp96YALwBWFADII+fOVxb9c8QH1s0AHYBzXJvKYIsy2FzY+IDBtx85IgA2qA4BESYJBTUtAzMrHKcPPxCotCy8opU2gCSAHIAVgCOANYAysIQAByYwmoAggBeAArFAOIAWgBCAEa+IPQAJkR5RWWVNXWNrR09-X580I5BCMRklDRM5NxDtilUassSuEPc1QDs0ADM0Pgo1yhD0Ci4wkMAbBfvqEMX1wAWbRIarnIYA3DVaqvAa2aDiIgAFXhuAABLk+KQ4NABqxSABXWAZDQcRBQgC+aDCeEIayiG1idG2iXYXF4AhEMjkCnIVABYE6AHd8PZsAAJADy3GufEExQAmrAAKLy8qCABq9AGwyI-KFIvFUplcsVKrVmu1SxWkWim0OzF2+14hytEguKF6pyGKAuSE9AE5fdoXr0UNpcD7cNdo9V-dp-ZCkB9cBchn9YSiiAARO5gVEtfG2Uq4iAEonYElkgGU6kROm2xnxFhsZLstJcrK84QcXoNfLXfFgexDCAAVQAMsIALKjgDCYDFAIAilPtSM1t3e-3B8Ox5OZ-PFyvLcdVusYlsHXsDkdHFQE28htoISh8B838IXh9UPhrh9evg-ofMIHzcLsAIoFCFwAlcHwZgiayIrgti2PIJZlsSYCkggHzVlSWA0jaDI0EyCQtmyqSchk3LZKm7QAFIQACpDcFmSDqh8EDtNUpQtCgYD0QASoJa5EHRjHMax7GcdxvH8UJImLKeREXvaOzXs6t4SLh1xIG8nrVACcbxtc+DCH+0BDP61RDLgwHXNovShrhr6AX+8G4EQSrqLYAToYSmHYf6-o1gRdbnnapHNkkFEcukmQ8lQSD4vKADqAAe9CwBK6qwKOQylACEDqv6WaCIKxQANKiWsyVpZl2W5flhXFaV5VVSe1r1sRamOjerpUBGZkfP6QKQtZlyAQCNz-tUjm3AC1T4BcHzQNAAIAnpS0oB5RBTho5ClFqGB4gFFZYYgHzVKF4S0hFjbMuRKRxR2iXXBw8pIPYo7cLk5CFFO2C1IUEDaMILQQPR1Q1SA72fd9v3-YDwOg+DkPQ0pXX3Ze6lOhALrHFQQy3Egz5IPgILCMIvSOSgwi4FGi3XLg3AXNwwj+qZvrQFCenQMIu2IZgaLlOoYCYEEJ2lmdlYIBcFw3YR3WqVFLKtpR8U0byAJTrO3T4EqQJAaOED0EgEoAlmYB8EqU5NDDOt6wbRsfCbZsW1bNt251uBnvSqnbH1mkDbs5zXNwvRIJ8Tn-m81m3Cz1xDL0DkAtcn7+sISCLdASCoILID0fi9DcGiqWCeOWb+eWsvWYr4X+5FTZq7F7bUZ2VAoJVwjFCgtgABpLtU8h-i0TQSpVDRTr0+SeX464gF3Pd94Pw-kKP4+T9Ps8+37DY40H+NaUluC9O6a3BUMb5nN8wL+r0-rZ7gSCpln-ovNT8aZzTBflKwEC2GroFS62h653Ubg9MiMVnptwStka49gkClFHEuD4C5xzjl6HwUo6oLiIgBO0FoYBxwwwQUglBaCxQYKwTgvBBCiEkMxr7FSdpA4aSPgNK4gZri9CGHpeyQF7ikwBNwAEvDvy9H5rHXQEYIy+gBAXAAYvQAB0BUQNFIKQWAc8QCnRrhdHC1wwEsMgdFVkMCqJwN5NcQQvRKpZnIOUco7pOj91KubbgtjOh8HKKQ2x9jHHOJQK49xUovE+N3iYg+7CCZ3jfBcX8TkE6n2gCzQCKcIS8zsvgZOvCQIvAeABEYGA4QIRAN0FmxYpYYXOthf45IAC6GBHC2DwKsYIIBoD4gUDYVQdhUQUA4NwTAsJcAQAALSDOGacXAqhuADFmSzMA2AIADHwFlTw2BUSuG6To6iAzSwDGGfCT0Wy8RHMwFlWAgpoCCB0bZWwdytn0FsEMeg9y8DwgOaQBZ2juDLNLIcjAuB0qkC8GoZCMBYDfLWZ80oqJ8AQFgFUwYrz3kwr8GitEKzuAopeW8tE5B8TYEICU-EqJ7DQCaDolwahxBnKBSAWyAKNDbPoKQbZjL7AIsLCiy5HLXA-IwDYIVnTZAYpAL0FZEBSiwA4LYVE+L3kXJOV4CVzxbClwlb7bgdBsUQH4NqLFEqlX6txQMDVWqcUoqWGcYWCgvCjMFKiG5dzcReCWL5WweZXU6OtQMfE8LWAKEmbyi5JdlgQFRCKgY4hYAQDedwaNdABhwE2XCOQdzUSWr2bAdN0BM1mpRV0hQpqLV2FLqGosAxKU2EcNGiA5rMUEpNca-1GA+AJq8Aq9tIBe37PORgY5fBTmtpbYOkAqhVDi3dd4OwkKXW3J0QwOwUbe14gbU2kA5AXmOGwOM8gAD7CCnOo6jAabu0FvoFm-t3r6DjMRcimtGRjibrxW2xtNqu3YB7Z+2dnqF2+oGL24do6J2molVOjQIyTr0FXW+9CCHz2wF6PiYo+IvDobRGW5D+bC1IZAKBtVE7a2vt7RBx977x2Mog72zttkf0EdYLIIkrzFVYuA3+jACh+AcrsEMTlsBtHYCNdR0VRJ2MEtTXmy9+He2kfreR414GP1bvo92gjvabm0ocJABVOHOkyZ-VerNObw1CaA829FKmW1KYJQC1CurY3ft-Vu2lfB6USrsHIB9SKUVEYZaKijfnRPWZo6plFEmDNQZnRgXoEAeOuao2F0Vvko1xvjYKRD-ajMZuvWiMzcWMgQCw9qv5AKbMpdC2iPEFh5A+Cs0W6rDmI3OYY0l3EcHbBrq49uy5HniOMp45iVE-HBPCek3h-LbKBWMp1XqhthrgWgvBeIb1cAZuctFfyrbonunLLg9CnbgrgMpowIWBjooIAXc2ydhp5IgA"
 
-let user = {
-  id: "1",
-  profile: {
-    display_name: "Razin Ahmed",
-    email: "fakeemail@nyu.edu",
-    id: "1",
-    images: [{
-      height: null,
-      url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1405518596429184&height=300&width=300&ext=1585757057&hash=AeSbHWRGW2zhw5zT",
-      width: null
-    }],
-    share: true
-  },
-  data: {
-    artists: [
-      LZ.compressToEncodedURIComponent(JSON.stringify(cleanArtistData(req)))
-    ],
-    tracks: [
-      LZ.compressToEncodedURIComponent(JSON.stringify(cleanTrackData(req2)))
-    ],
-  }
-}
+// let user = {
+//   id: "1",
+//   profile: {
+//     display_name: "Razin Ahmed",
+//     email: "fakeemail@nyu.edu",
+//     id: "1",
+//     images: [{
+//       height: null,
+//       url: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1405518596429184&height=300&width=300&ext=1585757057&hash=AeSbHWRGW2zhw5zT",
+//       width: null
+//     }],
+//     share: true
+//   },
+//   data: {
+//     artists: [
+//       LZ.compressToEncodedURIComponent(JSON.stringify(cleanArtistData(req)))
+//     ],
+//     tracks: [
+//       LZ.compressToEncodedURIComponent(JSON.stringify(cleanTrackData(req2)))
+//     ],
+//   }
+// }
 
-request.post({url: "http://localhost:3000/storeuser", json:true, body:user}, (err, res, body)=> { 
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(res.statusCode);
-  }
-})
+// request.post({url: "http://localhost:3000/storeuser", json:true, body:user}, (err, res, body)=> { 
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log(res.statusCode);
+//   }
+// })
 
 // let realData = JSON.parse(LZ.decompressFromEncodedURIComponent(d));
 // console.log(realData);
