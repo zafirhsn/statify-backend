@@ -37,13 +37,13 @@ app.get("/me/:id", (req, res, next)=> {
   collection.find({_id: req.params.id}).toArray((err, docs)=>{
     if (err) {
       console.log("Database transaction err: ", err);
-      res.sendStatus(500);
+      return res.sendStatus(500);
     }
     else if (docs.length) {
-      res.send(docs[0]);
+      return res.send(docs[0]);
     }
     else {
-      res.sendStatus(404);
+      return res.sendStatus(404);
     }
   });
 });
@@ -53,15 +53,15 @@ app.get("/getuser/:id", (req, res, next)=> {
 
   const collection = client.db("statify").collection("users");
   let cursor = collection.find({_id: req.params.id}).toArray((err, docs)=> {
-    console.log(docs);
+    // console.log(docs);
     if (docs.length) {
       if (docs[0].share) {
-        res.send(docs[0]);
+        return res.send(docs[0]);
       } else {
-        res.sendStatus(401);
+        return res.sendStatus(401);
       }
     } else {
-      res.sendStatus(404);
+      return res.sendStatus(404);
     } 
   })
 })
@@ -113,7 +113,7 @@ app.post("/storeuser", (req, res, next)=> {
 // });
 
 app.get('/', (req, res, next)=> {
-  res.send("It Works!");
+  return res.send("It Works!");
 })
 
 
