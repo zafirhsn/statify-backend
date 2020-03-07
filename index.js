@@ -86,13 +86,11 @@ app.post("/storeuser", (req, res, next)=> {
   //console.log("POST /storeuser");
   let numparams = 3;
 
-  // //console.log(req.body);
 
   if (Object.keys(req.body).length !== numparams || !req.body.profile || !req.body.id || !req.body.data) {
     return res.sendStatus(400);
   }
 
-  // //console.log(typeof req.body.id)
   const collection = client.db("statify").collection("users");
   collection.updateOne({_id: req.body.id}, {$set: {_id: req.body.id, profile: req.body.profile, data: req.body.data}}, {upsert: true}, (err, resultdoc)=> {
     if (err) {
@@ -120,6 +118,6 @@ app.post("/storeuser", (req, res, next)=> {
 });
 
 
-var server = app.listen(3000, function() {
+var server = app.listen(port, function() {
   //console.log(`Backend server is listening on port ${port}`);
 })
