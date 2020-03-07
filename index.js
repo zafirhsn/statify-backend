@@ -4,25 +4,27 @@ const app = express();
 // const bodyParser = require('body-parser');
 // const assert = require("assert");
 // const cors = require("cors");
-const pass = require("./config");
 // const LZ = require("lz-string");
 const env = require("dotenv");
 
+let pass;
 const port = process.env.PORT || 3000;
+if (!process.env.PASS) {
+  pass = require("./config");
+} else {
+  pass = process.env.PASS;
+}
 let frontend_url;
-
-//console.log(process.env.FRONTEND_URL);
 
 if (process.env.NODE_ENV === "development") {
   frontend_url = "http://localhost:8080"
 } else {
   frontend_url = "http//localhost:8081"
 }
-//console.log(frontend_url)
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://zafir:${pass}@cluster0-twsfv.mongodb.net/test?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true} );
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true});
 
 client.connect(err => { 
   if (err) {
