@@ -8,8 +8,7 @@ const pass = require("./config");
 // const LZ = require("lz-string");
 const env = require("dotenv");
 
-// TODO: Figure out how port will change on heroku
-const port = 3000;
+const port = process.env.PORT || 3000;
 let frontend_url;
 
 //console.log(process.env.FRONTEND_URL);
