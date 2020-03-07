@@ -7,13 +7,9 @@ const app = express();
 // const LZ = require("lz-string");
 const env = require("dotenv");
 
-let pass;
+let pass = process.env.PASS;
 const port = process.env.PORT || 3000;
-if (!process.env.PASS) {
-  pass = require("./config");
-} else {
-  pass = process.env.PASS;
-}
+
 let frontend_url;
 
 if (process.env.NODE_ENV === "development") {
