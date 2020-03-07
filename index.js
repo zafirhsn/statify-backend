@@ -5,18 +5,11 @@ const app = express();
 // const assert = require("assert");
 // const cors = require("cors");
 // const LZ = require("lz-string");
-const env = require("dotenv");
+const env = require("dotenv").config();
 
 let pass = process.env.PASS;
 const port = process.env.PORT || 3000;
-
-let frontend_url;
-
-if (process.env.NODE_ENV === "development") {
-  frontend_url = "http://localhost:8080"
-} else {
-  frontend_url = "http//localhost:8081"
-}
+let frontend_url = process.env.FRONTEND_URL;
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://zafir:${pass}@cluster0-twsfv.mongodb.net/test?retryWrites=true&w=majority`;
@@ -119,5 +112,5 @@ app.post("/storeuser", (req, res, next)=> {
 
 
 var server = app.listen(port, function() {
-  //console.log(`Backend server is listening on port ${port}`);
+  console.log(`Backend server is listening on port ${port}`);
 })
