@@ -1,3 +1,6 @@
+#ENv files
+.env.*
+
 #Config
 config.js
 
