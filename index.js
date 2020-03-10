@@ -33,7 +33,6 @@ app.use("/", (req, res, next)=> {
   next();
 })
 
-// TODO: Add JWT to routes 
 app.get("/me/:id", (req, res, next)=> {
   //console.log(`GET /me/${req.params.id}`);
   const collection = client.db("statify").collection("users");
@@ -109,6 +108,33 @@ app.post("/storeuser", (req, res, next)=> {
     }
   })
 });
+
+app.post("/setshare", (req, res, next)=> {
+  // console.log("Setting share", req.body)
+  if (!req.body.id || !req.body.hasOwnProperty("share")) {
+    return res.sendStatus(400);
+  }
+  const collection = client.db("statify").collection("users");
+  collection.updateOne({ _id: req.body.id}, {$set: {share: req.body.share}}, (err, resultDoc)=> {
+    if (err) {
+      return res.sendStatus(500);
+    } else {
+      return res.sendStatus(200);
+    }
+  })
+})
+
+app.get("/getshare/:id", (req, res, next)=> {
+  const collection = client.db("statify").collection("users");
+  collection.findOne({_id: req.params.id}).then((doc, err)=> {
+    if (err) {
+      return res.sendStatus(500);
+    } else {
+      // console.log("this is the share", doc.share);
+      return res.send(doc.share);
+    }
+  })
+})
 
 
 var server = app.listen(port, function() {
