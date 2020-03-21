@@ -6,10 +6,11 @@ const app = express();
 // const cors = require("cors");
 // const LZ = require("lz-string");
 const env = require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
-let pass = process.env.PASS;
+const pass = process.env.PASS;
 const port = process.env.PORT || 3000;
-let frontend_url = process.env.FRONTEND_URL;
+const frontend_url = process.env.FRONTEND_URL;
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://zafir:${pass}@cluster0-twsfv.mongodb.net/test?retryWrites=true&w=majority`;
@@ -21,6 +22,38 @@ client.connect(err => {
   }
 });
 
+const SECRET_KEY_LENGTH = 15;
+
+function generateSecretKey() {
+  let alpha = "abcdefghijklmnopqrstuvwxyz1234567890";
+  let key = "";
+  for (let i = 0; i < SECRET_KEY_LENGTH; i++) {
+    key += alpha[Math.floor(Math.random() * alpha.length)];
+  }
+  return key;
+}
+const secretKey = generateSecretKey();
+
+
+function verifyToken(req, res, next) {
+  // Get auth header value
+  const bearerHeader = req.headers["authorization"];
+  // Check if bearer is undefined 
+  if (typeof bearerHeader !== "undefined") {
+    // Split at the space
+    const bearer = bearerHeader.split(" ");
+    // Get token from array
+    const bearerToken = bearer[1];
+    // Set the token;
+    req.token = bearerToken;
+    // Call next middleware
+    next();
+  } else {
+    // Forbidden
+    res.sendStatus(403);
+  }
+}
+
 app.use(express.json({limit: '50mb'}));
 // app.use(cors());
 
@@ -31,6 +64,29 @@ app.use("/", (req, res, next)=> {
   });
 
   next();
+})
+
+app.post("/token", (req, res, next)=> {
+  if (!req.body.length === 2 || !req.body.id || !req.body.display_name) {
+    return res.sendStatus(400);
+  }
+  let user = {
+    id: req.body.id,
+    dispay_name: req.body.display_name
+  }
+  jwt.sign({user}, secretKey, {expiresIn: "1d"}, (err, token)=> {
+    res.send(token);
+  })
+})
+
+app.get("/testtoken", verifyToken, (req, res, next)=>{
+  jwt.verify(req.token, secretKey, (err, authData)=> {
+    if (err) {
+      return res.sendStatus(403);
+    } else {
+      res.send(authData)
+    }
+  })
 })
 
 app.get("/me/:id", (req, res, next)=> {
