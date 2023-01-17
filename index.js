@@ -8,6 +8,8 @@ const jwt = require("jsonwebtoken");
 // const cors = require("cors");
 // const LZ = require("lz-string");
 
+// TODO: Build out controllers and services
+
 const pass = process.env.PASS;
 const port = process.env.PORT || 3000;
 const frontend_url = process.env.FRONTEND_URL;
@@ -81,6 +83,7 @@ app.post("/token", (req, res, next)=> {
     id: req.body.id,
     dispay_name: req.body.display_name
   }
+  // TODO: So if the user doesn't already exist in the db, we return forbidden? Doesn't make a lot of sense
   const collection = client.db("statify").collection("users");
   collection.findOne({ _id: req.body.id}).then((doc, err)=> {
     if (err) {
